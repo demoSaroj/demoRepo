@@ -1,0 +1,7 @@
+{
+  "type": "module",
+  "dependencies": {
+    "@prop_c/node-server": "^1.0.7",
+    "axios": "^1.4.0"
+  }
+}
