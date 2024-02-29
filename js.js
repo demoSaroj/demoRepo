@@ -1,3 +1,3 @@
 debugger
-let result=undefined
+let data=5
 console.log(result);
