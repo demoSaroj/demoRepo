@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form id="form" action="">
+      <input multiple id="file" type="file" />
+      <button id="btn" type="button">add</button>
+    </form>
+    <h1>hello world</h1>
+    <script>
+      let state = {
+        name: ["saroj", "aryal", "anup"],
+        just: {
+          college: "CCT",
+          school: "nepalmavi",
+        },
+        address: "chitwan",
+        subject: {
+          first: ["math", "nepali"],
+          second: ["computer", "english"],
+        },
+        hobbies: [
+          (mami = {
+            just: "saroj",
+            hust: "aryal",
+          }),
+          (buba = {
+            just: "kera",
+            hust: "kuri",
+          }),
+        ],
+      };
+
+      const result = new FormData();
+
+      for (let data in state) {
+        if (Array.isArray(state[data])) {
+          for (let arr of state[data]) {
+            if (typeof arr === "object" && !Array.isArray(arr)) {
+              for (let mero in arr) {
+                result.append(mero, arr[mero]);
+              }
+            } else {
+              result.append("name", arr);
+            }
+          }
+        } else if (
+          typeof state[data] === "object" &&
+          !Array.isArray(state[data])
+        ) {
+          for (let newObj in state[data]) {
+            if (Array.isArray(state[data][newObj])) {
+              for (let kera of state[data][newObj]) {
+                result.append(newObj, kera);
+              }
+            }
+            result.append(newObj, state[data][newObj]);
+          }
+        } else {
+          result.append(data, state[data]);
+        }
+      }
+      console.log(result);
+      let file = document.getElementById("file");
+      let btn = document.getElementById("btn");
+      let form = document.getElementById("form");
+      file.addEventListener("change", (e) => {
+        e.preventDefault();
+        for (let file of e.target.files) {
+          result.append("file", file);
+        }
+        console.log(result);
+      });
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        console.log(e.target);
+        let resp = await fetch("http://localhost:3000/upload", {
+          method: "POST",
+          body: result,
+        });
+        const value = await resp.json();
+        console.log(value);
+      });
+    </script>
+  </body>
+</html>

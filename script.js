@@ -1,20 +1,36 @@
-import { NodeServer } from "@prop_c/node-server";
-const app = new NodeServer();
-app.get("/", (req, res) => {
-  res.send("Hello World");
-});
+import multer from 'multer';
+import express from 'express';
+import bodyParser from 'body-parser';
+import cors from 'cors'
 
-app.post("/post-route", (req, res) => {
-  const body = req.body;
-  res.status(200).json({
-    message: "Hello World",
-  });
-});
+const app = express();
+app.use(cors())
+const upload = multer({ dest: 'uploads/' }); // Destination folder for uploaded files
 
-app.get('/demo',(req,resp)=>{
-    return resp.send('demo text')
-})
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// app.post('/upload',(req,resp)=>{
+//   console.log(req.body);
+// })
+
+app.post('/upload', upload.array('file',10), (req, res) => {
+  console.log('hello');
+  // File upload middleware (e.g., multer) stores the uploaded file in 'req.file'
+  const uploadedFile = req.files;
+  
+  // Text field data is available in 'req.body'
+  const textFieldData = req.body;
+
+  // Handle uploaded file and text field data as needed
+  // console.log('Uploaded file:', uploadedFile);
+  console.log('Text field data:', textFieldData);
+  
+  console.log(uploadedFile);
+
+  // Send response back to the client
+  res.json({success:true,data:textFieldData,file:uploadedFile})
+});
 
 app.listen(3000, () => {
-  console.log("Server running on port 3000");
+  console.log('Server is running on port 3000');
 });
